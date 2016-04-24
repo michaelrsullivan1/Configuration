@@ -142,3 +142,7 @@ alias ll='ls -l --color=auto'
 
 PS1="\[\033[1;32m\]<\u@\h \W>\$\[\033[0m\] "
 export PS1
+
+#Set default file editor to vim
+export VISUAL=vim
+export EDITOR="$VISUAL"

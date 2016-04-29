@@ -70,3 +70,9 @@ inoremap <Up> <NOP>
 inoremap <Down> <NOP>
 inoremap <Left> <NOP>
 inoremap <Right> <NOP>
+
+" Changing save and quit comments so capitalization doesn't matter
+:command WQ wq
+:command Wq wq
+:command W w
+:command Q q

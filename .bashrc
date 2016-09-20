@@ -131,6 +131,7 @@ alias ldown='down=$(ls -rt -d -1 ~/Downloads/* | tail -n 1) && cp $down ./'
 
 #Change umask to make directory sharing easier
 umask 0002
+
 # Ignore duplicates in command history and increase
 # history size to 1000 lines
 export HISTCONTROL=ignoredups
@@ -146,3 +147,20 @@ export PS1
 #Set default file editor to vim
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
+#Set up files on new hash dev site
+alias new_hash_dev="~/Configuration/Scripts/./new-hash-dev-site"
+
+#Combination of cd and ls
+alias cl=changeDirectory
+function changeDirectory {
+	cd $1; ls
+}
+
+#Quick jumps to parent directories
+alias .='cl ..'
+alias ..='cl ../../'
+alias ...='cl ../../../'
+alias ....='cl ../../../../'
+alias .....='cl ../../../../../'
+alias ......='cl ../../../../../../'

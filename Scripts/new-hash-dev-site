@@ -159,6 +159,29 @@ case $response in
 	;;
 esac
 
+
+#Add bootstrap grid system 
+
+hasGrid=false
+
+read -r -p "Would you like to include Boostrap's grid system? [y/N] " response
+
+case $response in 
+	[yY][eE][sS]|[yY])
+
+		hasGrid=true
+		curl https://raw.githubusercontent.com/Hilzu/bootstrap-grid/master/dist/grid.css > css/bootstrap-grid.css
+		echo "Downloaded boostrap grid"
+	;;
+	*)
+		echo "Did not download bootstrap grid"
+	;;
+esac
+
+
+
+
+
 #Enqueue CSS and JS
 echo "" >> functions.php
 echo "/**" >> functions.php
@@ -174,8 +197,20 @@ echo -ne "\twp_enqueue_style('$name" >> functions.php
 echo "-mobile-css', get_stylesheet_directory_uri() . '/css/$mobile_css_file');" >> functions.php
 echo -ne "\twp_enqueue_script('$name" >> functions.php
 echo "-js', get_stylesheet_directory_uri() . '/js/$js_file');" >> functions.php
+
+if [ $hasGrid ] 	
+then
+	echo -e "\twp_enqueue_style('bootstrap-grid', get_stylesheet_directory_uri() . '/css/bootstrap-grid.css');" >> functions.php
+
+fi
+
 echo "}" >> functions.php
 echo -n "add_action('wp_enqueue_scripts', '" >> functions.php
 echo -n "$name" >> functions.php
 echo -n "s_scripts');">> functions.php
+
+if [ $hasGrid ]
+then 
+	echo -n "Boostrap grid, "
+fi 
 echo "$css_file, $mobile_css_file, and $js_file were all enqueued in your functions.php file"

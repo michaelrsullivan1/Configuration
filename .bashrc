@@ -113,17 +113,13 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# --- Start Mike's Additions ---#
-
 
 # easier redshift commands
 alias rednight='redshift -O 2000'
-
 alias redeve='redshift -O 3500'
-
 alias redday='redshift -O 6500'
 
-# do standard updates
+# do standard updates for Ubunutu
 alias update='sudo apt-get update && sudo apt-get upgrade'
 
 #Pull most recent file in downloads to current working folder
@@ -131,6 +127,7 @@ alias ldown='down=$(ls -rt -d -1 ~/Downloads/* | tail -n 1) && cp $down ./'
 
 #Change umask to make directory sharing easier
 umask 0002
+
 # Ignore duplicates in command history and increase
 # history size to 1000 lines
 export HISTCONTROL=ignoredups
@@ -142,3 +139,9 @@ alias ll='ls -l --color=auto'
 
 PS1="\[\033[1;32m\]<\u@\h \W>\$\[\033[0m\] "
 export PS1
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+alias netmonitor="sudo ifconfig wlan0 down && sudo iwconfig wlan0 mode monitor && sudo ifconfig wlan0 up"
+

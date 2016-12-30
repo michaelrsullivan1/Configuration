@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#Takes a two column CSV and converts it into an unordered list of anchor tags wrapped in list items.  The first column is the title (ends up between the anchor tags), second column is the link (href set to a target blank)  
+
 FILE=$1
 
 unamestring='uname'

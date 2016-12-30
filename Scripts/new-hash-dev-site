@@ -1,0 +1,216 @@
+#!/bin/bash
+
+echo "Type your name:"
+
+read name 
+
+name=$name
+
+name=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+uppercase_name="$(tr '[:lower:]' '[:upper:]' <<< ${name:0:1})${name:1}"
+
+css_file="$name.css"
+mobile_css_file="$name-mobile.css"
+js_file="$name.js"
+
+
+if [ ! -f "functions.php" ]
+then
+	echo "functions.php does not exists.  Check to make sure you are in the correct directory."
+	exit
+fi
+
+
+if [ -d "css" ]
+then 
+	echo "A css directory already exists."
+else 
+	mkdir "css"
+	echo "Created css directory"
+fi
+
+
+if [ -d "js" ]
+then 
+	echo "A js directory already exists"
+else 
+	mkdir "js"
+	echo "Created js directory"
+fi
+
+
+if [ -f "css/$css_file" ]
+then 
+	echo "$css_file already exists."
+else 
+	echo "$css_file was created"
+	touch "css/$css_file"
+
+	cat <<- CSS >> css/$css_file
+
+	/*===========  $uppercase_name's Stylesheet  ===========*/
+
+	CSS
+
+fi
+
+if [ -f "js/$js_file" ]
+then 
+	echo "$js_file already exists."
+else
+	echo "$js_file was created"
+	touch "js/$js_file"
+
+	cat <<- JS >> js/$js_file
+
+	 /*===========  $uppercase_name's JavaScript  ===========*/
+
+jQuery(document).ready(function($) {
+
+});
+	JS
+
+fi
+
+
+if [ -f "css/$mobile_css_file" ]
+then 
+	echo "$mobile_css_file already exists."
+else 
+	echo "$mobile_css_file was created"
+	touch "css/$mobile_css_file"
+
+	cat <<- MCSS >> css/$mobile_css_file
+
+	/*===========  $uppercase_name's Mobile Styles  ===========*/
+
+	MCSS
+
+fi
+
+	
+
+
+#Allow SVGs
+
+read -r -p "Would you like to allow SVGs to be uploaded? [y/N] " response
+case $response in
+	[yY][eE][sS]|[yY])
+
+		echo "" >> functions.php
+		echo "/**" >> functions.php
+		echo "* Allow SVGs to be uploaded." >> functions.php
+		echo "*/" >> functions.php
+		echo "function cc_mime_types(\$mimes) {" >> functions.php
+		echo -e "\t\$mimes['svg'] = 'image/svg+xml';" >> functions.php
+		echo -e "\treturn \$mimes;" >> functions.php
+		echo  "}" >> functions.php
+		echo "" >> functions.php
+		echo "add_filter('upload_mimes', 'cc_mime_types');" >> functions.php
+		echo "Allow SVGs snippet added to functions.php"
+	;;
+	*)
+		echo "Allow SVGs snippet not added"
+	;;
+esac
+
+
+
+#Remove Paragraph Tags if nessesary
+
+read -r -p "Would you like to disable wpautop filter? [y/N] " response
+case $response in 
+	[yY][eE][sS]|[yY])
+
+		echo "" >> functions.php
+		echo "/**" >> functions.php
+		echo "* Disable wpautop filter." >> functions.php
+		echo "*/" >> functions.php
+		echo "remove_filter('the_content', 'wpautop');" >> functions.php
+		echo "remove_filter('the_exerpt', 'wpautop');" >> functions.php
+		echo "Disabled wpautop filter"
+	;;
+	*)
+		echo "Did not disable wpautop filter"
+	;;
+esac
+		
+
+
+#Enable jQuery if nessesary
+
+read -r -p "Would you like to include jQuery in your functions.php file? [y/N]  " response
+case $response in 
+	[yY][eE][sS]|[yY])
+
+		echo "" >> functions.php
+		echo "/**" >> functions.php
+		echo "* Include jQuery." >> functions.php
+		echo "*/" >> functions.php
+		echo "function include_jQuery() {" >> functions.php
+		echo -e "\twp_enqueue_script('jquery');" >> functions.php
+		echo "}" >> functions.php
+		echo "" >> functions.php
+		echo "add_action('init', 'include_jQuery');" >> functions.php
+		echo "Added jQuery to functions.php"
+	;;
+	*)
+		echo "Did not add jQuery to functions.php"
+	;;
+esac
+
+
+#Add bootstrap grid system 
+
+hasGrid=false
+
+read -r -p "Would you like to include Boostrap's grid system? [y/N] " response
+
+case $response in 
+	[yY][eE][sS]|[yY])
+
+		hasGrid=true
+		curl https://raw.githubusercontent.com/Hilzu/bootstrap-grid/master/dist/grid.css > css/bootstrap-grid.css
+		echo "Downloaded boostrap grid"
+	;;
+	*)
+		echo "Did not download bootstrap grid"
+	;;
+esac
+
+
+
+
+
+#Enqueue CSS and JS
+echo "" >> functions.php
+echo "/**" >> functions.php
+echo -n "* Enqueue $uppercase_name" >> functions.php
+echo "'s scripts and styles." >> functions.php
+echo "*/" >> functions.php
+echo -n "function " >> functions.php
+echo -n $name >> functions.php
+echo "s_scripts() {" >> functions.php
+echo -ne "\twp_enqueue_style('$name" >> functions.php
+echo "-css', get_stylesheet_directory_uri() . '/css/$css_file');" >> functions.php
+echo -ne "\twp_enqueue_style('$name" >> functions.php
+echo "-mobile-css', get_stylesheet_directory_uri() . '/css/$mobile_css_file');" >> functions.php
+echo -ne "\twp_enqueue_script('$name" >> functions.php
+echo "-js', get_stylesheet_directory_uri() . '/js/$js_file');" >> functions.php
+
+if [ $hasGrid ] 	
+then
+	echo -e "\twp_enqueue_style('bootstrap-grid', get_stylesheet_directory_uri() . '/css/bootstrap-grid.css');" >> functions.php
+
+fi
+
+echo "}" >> functions.php
+echo -n "add_action('wp_enqueue_scripts', '" >> functions.php
+echo -n "$name" >> functions.php
+echo -n "s_scripts');">> functions.php
+
+if [ $hasGrid ]
+then 
+	echo -n "Boostrap grid, "
+fi 
+echo "$css_file, $mobile_css_file, and $js_file were all enqueued in your functions.php file"

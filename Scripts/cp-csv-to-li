@@ -1,0 +1,22 @@
+#!/bin/bash
+
+FILE=$1
+
+unamestring='uname'
+
+if [[ "$unamestring" == 'Darwin' ]];
+then 
+	sed -Gn 's/,http/;http/w semi-temp.csv' < $FILE
+	sed -Gn 's/([^;]+);(.+)/<li><a href="\2" target="_blank">\1<\/a><\/li>/w temp.html' < semi-temp.csv		
+	sed -Gn '1,10 s/<li>/<li class=\"list-top\">/gw final-temp.html' < temp.html
+else
+	sed -rn 's/,http/;http/w semi-temp.csv' < $FILE
+	sed -rn 's/([^;]+);(.+)/<li><a href="\2" target="_blank">\1<\/a><\/li>/w temp.html' < semi-temp.csv		
+	sed -rn '1,10 s/<li>/<li class=\"list-top\">/gw final-temp.html' < temp.html
+fi
+
+tail -n +11 temp.html >> final-temp.html
+mv final-temp.html $FILE
+rm temp.html
+rm semi-temp.csv
+rename 's/\.csv/\.html/' $FILE

@@ -42,7 +42,7 @@ set smartcase		" Do smart case matching
 set incsearch		" Incremental search
 set autowrite		" Automatically save before commands like :next and :make
 set hidden		" Hide buffers when they are abandoned
-set mouse=a		" Enable mouse usage (all modes)
+"set mouse=a		" Enable mouse usage (all modes)
 
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
@@ -72,3 +72,9 @@ inoremap <Left> <NOP>
 inoremap <Right> <NOP>
 
 :set tabstop=4
+
+" Changing save and quit comments so capitalization doesn't matter
+:command WQ wq
+:command Wq wq
+:command W w
+:command Q q

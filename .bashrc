@@ -86,7 +86,7 @@ fi
 
 # some more ls aliases
 alias ll='ls -alF'
-alias la='ls -A'
+alias la='ls -a'
 alias l='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -145,3 +145,24 @@ export EDITOR="$VISUAL"
 
 alias netmonitor="sudo ifconfig wlan0 down && sudo iwconfig wlan0 mode monitor && sudo ifconfig wlan0 up"
 
+#Set default file editor to vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+#Set up files on new hash dev site
+alias new-hash-dev="~/Configuration/Scripts/./new-hash-dev-site"
+alias cp-csv-to-li="~/Configuration/Scripts/./cp-csv-to-li"
+
+#Combination of cd and ls
+alias cl=changeDirectory
+function changeDirectory {
+	cd $1; ls
+}
+
+#Quick jumps to parent directories
+alias .='cl ..'
+alias ..='cl ../../'
+alias ...='cl ../../../'
+alias ....='cl ../../../../'
+alias .....='cl ../../../../../'
+alias ......='cl ../../../../../../'
